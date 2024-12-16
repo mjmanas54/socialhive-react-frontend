@@ -1,9 +1,9 @@
 import './App.css';
 import Navbar from './components/Navbar';
-import Login from './components/Login';
+import Login from './components/AuthComponents/Login';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Signup from './components/Signup';
-import Chatbox from './components/Chatbox';
+import Signup from './components/AuthComponents/Signup';
+import Chatbox from './components/ChatComponents/Chatbox';
 import { useState,useEffect } from 'react';
 
 function App() {

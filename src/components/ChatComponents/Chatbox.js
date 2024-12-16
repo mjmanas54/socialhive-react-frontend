@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../App.css';
+import '../../App.css';
 import Friendsbox from './Friendsbox';
 import Messagebox from './Messagebox';
 import NoChatOpen from './NoChatOpen';
