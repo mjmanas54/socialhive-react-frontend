@@ -31,6 +31,7 @@ const Friendsbox = (props) => {
         const result = await response.json(); // Parse JSON response
         setUsers(result.data); // Update state
         setFilteredUsers(result.data);
+        console.log(result.data)
         
       } catch (error) {
         navigate("/login")

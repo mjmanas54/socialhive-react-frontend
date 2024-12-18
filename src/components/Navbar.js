@@ -1,9 +1,19 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 
 const Navbar = (props) => {
   const navigate = useNavigate(); // To navigate to a different page
   // console.log("hello")
+
+  // Load logged-in user from localStorage if not already set
+  useEffect(() => {
+    if (props.loggedInUser === null) {
+      const storedUser = localStorage.getItem('loggedInUser');
+      if (storedUser) {
+        props.setLoggedInUser(JSON.parse(storedUser));
+      }
+    }
+  }, [props]);
 
   const handleLogout = async () => {
     try {
@@ -55,9 +65,20 @@ const Navbar = (props) => {
             <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/">Home</Link>
             </li>
+            <li className="nav-item">
+              {props.loggedInUser && props.loggedInUser["_id"] ? (
+                <Link className="nav-link active" aria-current="page" to={`/profile/${props.loggedInUser["_id"]}`}>Profile</Link>
+              ) : (
+                <Link className="nav-link active" aria-current="page" to="/login">Login to view Profile</Link>
+              )}
+            </li>
+
+            <li className="nav-item">
+              <Link className="nav-link active" aria-current="page" to="/add-post">Add Post</Link>
+            </li>
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
+            <li className="nav-item d-flex align-items-center">
               {(!props.loggedInUser)||(props.loggedInUser.name==="")?<Link className="nav-link active" aria-current="page" to="/login">Login</Link>
               :props.loggedInUser.name}
               

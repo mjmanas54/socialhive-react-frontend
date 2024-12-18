@@ -58,7 +58,7 @@ const MessageTyper = (props) => {
           </div>
         )}
       <div className="input-group container my-2 message-typer" ref={divRef}>
-        <button class="btn btn-outline-secondary mt-2" type="button" id="button-addon1" ref={pickerButtonRef} onClick={()=>{setShowEmojiPicker(!showEmojiPicker)}}><span role="img" aria-label="emoji">😊</span></button>
+        <button className="btn btn-outline-secondary mt-2" type="button" id="button-addon1" ref={pickerButtonRef} onClick={()=>{setShowEmojiPicker(!showEmojiPicker)}}><span role="img" aria-label="emoji">😊</span></button>
         <input required onChange={handleOnChange} value={msgText} type="text" className="form-control mt-2" placeholder="Type your message here" aria-label="Recipient's username" aria-describedby="button-addon2"/>
         <button className="btn btn-outline-secondary mt-2" type="submit" id="button-addon2"><i className="fa fa-send"></i>
         </button>

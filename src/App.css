@@ -45,6 +45,10 @@ height: 1px;
 background: #eee;
 }
 
+body{
+  background-color: #e9e8eb;
+}
+
 .outer-box{
   border: 1px solid rgb(212, 210, 210);
   border-radius: 5px;
@@ -215,3 +219,77 @@ background: #eee;
 }
 
 
+/* profile page css */
+
+.profile-page{
+  display: flex;
+  flex-direction: column;
+  margin-left: 250px;
+  margin-right: 250px;
+}
+
+.profile-box{
+  display: flex;
+  flex-direction: column;
+  height: 350px;
+  border-radius: 5px;
+}
+
+.post-box{
+}
+
+.cover-photo{
+  background-image: url(https://i.ibb.co/8DdJcmt/DALL-E-2024-12-15-19-56-21-A-clean-professional-background-image-for-an-email-template-featuring-sof.webp);
+  flex: 3;
+}
+
+.profile-content{
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-nav{
+  flex: 1;
+}
+
+.profile-name{
+  flex: 3;
+  display: flex;
+}
+
+.profile-info{
+  flex: 1;
+}
+
+.display-picture{
+  width: 15%;
+}
+
+.display-picture-img{
+  border-radius: 100%;
+  z-index: 1000;
+  position: absolute;
+  top: 23%;
+}
+
+.profile-name-text{
+}
+
+.btn-circle {
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.like:hover{
+  cursor: pointer;
+}
+
+.nav-item:hover{
+  cursor: pointer;
+}

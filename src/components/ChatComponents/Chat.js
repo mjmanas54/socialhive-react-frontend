@@ -40,11 +40,10 @@ const Chat = (props) => {
   const convertToIST = (timestamp) => {
     const date = new Date(timestamp);
     return new Intl.DateTimeFormat("en-IN", {
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: true,
-      timeZone: "Asia/Kolkata",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+        timeZone: "Asia/Kolkata",
     }).format(date);
   };
 
