@@ -48,40 +48,57 @@ const ChatSection = (props) => {
   },[props.selectedUser,props.loggedInUser.email])
 
 
-  useEffect(() => {
+  const connectWebSocket = () => {
+    if (socket) {
+      console.log('WebSocket is already connected.');
+      return; // Prevent creating a new socket if one is already established
+    }
+
     const sckt = new WebSocket('ws://localhost:9000/ws'); // Replace with your WebSocket server URL
 
-    setSocket(sckt)
-
     sckt.onopen = () => {
-      console.log('WebSocket is connected!');
+      
     };
 
     sckt.onmessage = (event) => {
-      console.log(event.data)
-      const parsedData = JSON.parse(event.data)
-      const {action,message_content} = parsedData
-      console.log(message_content)
+      const parsedData = JSON.parse(event.data);
+      const { action, message_content } = parsedData;
 
-      if(action === "delete"){
-        setMessages((prevMessages) => 
-          (prevMessages || []).filter((message) => message._id !== message_content._id)
-        );
-      }
-      else{
-        setMessages((prevMessages) => [...(prevMessages || []), message_content]);
-      }
-      console.log("messages : ",messages)
+      setMessages((prevMessages) => {
+        const updatedMessages =
+          action === "delete"
+            ? (prevMessages || []).filter((message) => message._id !== message_content._id)
+            : [...(prevMessages || []), message_content];
+
+        return updatedMessages;
+      });
     };
 
     sckt.onerror = (error) => {
-      console.error('WebSocket Error:', error);
+      console.error('WebSocket error:', error);
     };
 
-    return () => {
-      sckt.close();
+    sckt.onclose = (event) => {
+      console.log('WebSocket is closed:', event);
+      setTimeout(() => {
+        console.log('Attempting to reconnect...');
+        connectWebSocket(); // Reconnect on close
+      }, 3000); // Retry after 3 seconds
     };
-  }, []);
+
+    setSocket(sckt);
+  };
+
+  useEffect(() => {
+    connectWebSocket();
+
+    return () => {
+      if (socket) {
+        console.log('Closing WebSocket connection...');
+        socket.close();
+      }
+    };
+  }, []); // Empty dependency array ensures this runs once on mount
 
 
   const chatSectionRef = useRef(null);  // Reference to the chat section

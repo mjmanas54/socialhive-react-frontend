@@ -4,7 +4,6 @@ const FriendInfo = (props) => {
   const handleOnClick = ()=>{
     props.setSelectedUser(props.user)
   }
-  console.log("dp:",props.user.dp)
   return (
     <div className={`container friend-info p-3 ${((props.selectedUser !== null)&&(props.selectedUser.email === props.user.email))?("selected"):""}`} onClick={handleOnClick}>
       <div className="profile-pic">

@@ -9,7 +9,7 @@ const CurrentFriend = (props) => {
       </div>
       <div className="name">
         <div className="name-text">
-          <Link to={`http://localhost:3000/profile/${props.selectedUser._id}`} style={{"textDecoration":"none","color":"black"}}>
+          <Link to={`http://localhost:3000/profile/${props.selectedUser._id}/`} style={{"textDecoration":"none","color":"black"}}>
             <b>{props.selectedUser==null?"null":props.selectedUser.name}</b>
           </Link>
         </div>

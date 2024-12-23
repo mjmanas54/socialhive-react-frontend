@@ -62,9 +62,9 @@ const Login = (props) => {
         setEmailValidity(true)
         setPasswordValidity(true)
         setResponseStyle({display:"block"})
-        props.setLoggedInUser({"name":result.data.name,"email":result.data.email})
+        props.setLoggedInUser(result.data)
         console.log(result.data)
-        localStorage.setItem('loggedInUser', JSON.stringify({"_id":result.data._id,"name":result.data.name,"email":result.data.email}));
+        localStorage.setItem('loggedInUser', JSON.stringify(result.data));
         navigate("/")
       }
       else{

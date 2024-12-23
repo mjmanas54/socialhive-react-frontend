@@ -66,7 +66,7 @@ const Comment = (props) => {
                         {convertToIST(props.comment.commented_at)}
                     </div>
                 </div>
-                <div className='d-flex align-items-center mx-2 text-secondary'>
+                <div className='d-flex align-items-center mx-2 text-secondary' style={{"width":"100%"}}>
                     {props.comment.comment_text}
                 </div>
             </div>

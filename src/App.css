@@ -224,14 +224,13 @@ body{
 .profile-page{
   display: flex;
   flex-direction: column;
-  margin-left: 250px;
-  margin-right: 250px;
+  margin-left: 25%;
+  margin-right: 25%;
 }
 
 .profile-box{
   display: flex;
-  flex-direction: column;
-  height: 350px;
+  /* height: 350px; */
   border-radius: 5px;
 }
 
@@ -263,17 +262,19 @@ body{
 }
 
 .display-picture{
-  width: 15%;
+  flex: 1;
 }
 
 .display-picture-img{
   border-radius: 100%;
-  z-index: 1000;
-  position: absolute;
-  top: 23%;
 }
 
 .profile-name-text{
+  flex: 2;
+}
+
+.follow-btn{
+  flex:1;
 }
 
 .btn-circle {
@@ -292,4 +293,33 @@ body{
 
 .nav-item:hover{
   cursor: pointer;
+}
+
+.profile-nav-item{
+  color: var(--bs-secondary);
+  :hover{
+    color: var(--bs-primary);
+  }
+}
+
+*{
+  font-family: "Lato", serif;
+}
+
+::selection{
+  color: white;
+  background-color: var(--bs-dark);
+}
+
+
+.user-info-name{
+  color: var(--bs-dark);
+  text-decoration: none;
+  font-size: larger;
+}
+
+.navbar{
+  position:sticky;
+  top: 0;
+  z-index: 1000;
 }

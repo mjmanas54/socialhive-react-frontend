@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import CoverPhoto from './CoverPhoto'
 import ProfileContent from './ProfileContent'
-import ProfileNav from './ProfileNav'
+import DisplayPicture from './DisplayPicture'
+
 
 const ProfileBox = (props) => {
   const [user,setUser] = useState(null);
-  const getUserName = async ()=>{
+  
+  const getUser = async ()=>{
     try {
       const res = await fetch(`http://localhost:9000/user/${props.user_id}`,{
           method:"GET",
@@ -23,17 +24,16 @@ const ProfileBox = (props) => {
     }
   };
   useEffect(() => {
-    getUserName();
+    getUser();
   }, [props.user_id]);
 
   if(!user){
     return(<p>Loading...</p>)
   }
   return (
-    <div className='profile-box my-2 bg-white'>
-      <CoverPhoto user={user}/>
-      <ProfileContent user={user}/>
-      <ProfileNav user={user}/>
+    <div className='profile-box my-2 pt-4 bg-white'>
+      <DisplayPicture user={user}/>
+      <ProfileContent user={user} loggedInUser={props.loggedInUser}/>
     </div>
   )
 }

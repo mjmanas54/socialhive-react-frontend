@@ -207,7 +207,7 @@ const Post = (props) => {
                         className={`carousel-item ${index === 0 ? "active" : ""}`}
                         key={index}
                     >
-                        <img src={img} className="d-block w-100" alt="..." />
+                        <img src={img} className="d-block w-100 rounded-1" alt="..." />
                     </div>
                 ))}
             </div>
@@ -234,8 +234,8 @@ const Post = (props) => {
         <div className="post-actions d-flex mb-2">
             <div className='like' onClick={changeLikeCount} style={{"textDecoration":"none"}}>
                 <div className="like-button ms-4 d-flex align-items-center">
-                    <i className="fa fa-thumbs-up" style={{"color":isLiked===1||isLiked===2?"var(--bs-primary)":"var(--bs-secondary)"}}></i>
-                    <div className="like-count ms-1 me-3" style={{"color":isLiked===1||isLiked===2?"var(--bs-primary)":"var(--bs-secondary)"}}>
+                    <i className="fa fa-thumbs-up" style={{"color":isLiked===1||isLiked===2?"var(--bs-dark)":"var(--bs-secondary)"}}></i>
+                    <div className="like-count ms-1 me-3" style={{"color":isLiked===1||isLiked===2?"var(--bs-dark)":"var(--bs-secondary)"}}>
                         Like({
                             isLiked===2?(
                                 props.post.likedBy.length+1
@@ -287,7 +287,7 @@ const Post = (props) => {
                                     <img className="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="" width={50}/>
                                 </div>
                                 <div className="input-group">
-                                    <input value={commentText} onChange={handleOnChangeComment} type="text" className="form-control" placeholder="Add a comment..." aria-label="Recipient's username" aria-describedby="button-addon2"/>
+                                    <input required value={commentText} onChange={handleOnChangeComment} type="text" className="form-control" placeholder="Add a comment..." aria-label="Recipient's username" aria-describedby="button-addon2"/>
                                     <button className="btn btn-outline-secondary" type="submit" id="button-addon2"><i className='fa fa-send'></i></button>
                                 </div>
                             </div>

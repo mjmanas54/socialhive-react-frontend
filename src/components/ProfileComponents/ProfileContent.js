@@ -1,60 +1,149 @@
-import React, { useRef } from 'react'
+import React, {useState,useEffect} from 'react'
+import { useResolvedPath } from 'react-router-dom';
+import ProfileNav from './ProfileNav'
 
 const ProfileContent = (props) => {
-  const divRef = useRef(null);
-  const calcDPPosition = () => {
-    if (divRef.current) {
-      const divRect = divRef.current.getBoundingClientRect();
-      return {
-        top: `${divRect.top-167}px`,
-        left: `${divRect.left}px`,
-      };
+  const [base,setBase] = useState("");
+  const currPath = useResolvedPath("").pathname;
+  const [requestId,setRequestId] = useState("");
+  useEffect(()=>{
+    setBase(currPath)
+  },[]);
+
+  const [followStatus,setFollowStatus] = useState(3);
+  /*
+    0 not followed not requested
+    1 not followed requested
+    2 followed
+  */
+
+  useEffect(()=>{
+    const checkFollowStatus = async ()=>{
+      const res = await fetch(`http://localhost:9000/user/${props.loggedInUser._id}`,{
+        method:"GET",
+        credentials:"include",
+      });
+      const result = await res.json();
+      if(result.data.following.includes(props.user._id)){
+        setFollowStatus(2);
+        return;
+      }
+      let flag = true;
+      result.data.requestsSent.forEach(element => {
+        if(element.to === props.user._id){
+          flag = false;
+          setRequestId(element._id)
+        }
+      });
+
+      if(flag){
+        setFollowStatus(0);
+      }
+      else{
+        setFollowStatus(1);
+      }
+      
     }
-    return {};
-  };
+    checkFollowStatus();
+  },[props.user,props.loggedInUser])
 
-  const convertToIST = (timestamp) => {
-    const now = Date.now();
-    const differenceInMilliseconds = now - new Date(timestamp).getTime();
-
-    const differenceInSeconds = Math.floor(differenceInMilliseconds / 1000);
-    const differenceInMinutes = Math.floor(differenceInSeconds / 60);
-    const differenceInHours = Math.floor(differenceInMinutes / 60);
-
-    if (differenceInSeconds < 60) {
-        return `${differenceInSeconds} s`;
-    } else if (differenceInMinutes < 60) {
-        return `${differenceInMinutes} m`;
-    } else if (differenceInHours < 24) {
-        return `${differenceInHours} h`;
+  const handleOnClick = async ()=>{
+    
+    if(followStatus === 0){
+      const formData = new FormData();
+      formData.append("sender",props.loggedInUser._id);
+      formData.append("receiver",props.user._id);
+      try{
+        const res = await fetch("http://localhost:9000/follow-request",{
+          method:"POST",
+          body:formData,
+          credentials:"include",
+        });
+        if(!res.ok){
+          console.log("Error",res.status,res.statusText);
+        }
+        else{
+          setFollowStatus(1);
+          const result = await res.json();
+          setRequestId(result.requestId);
+        }
+      }catch(error){
+        console.log(error);
+      }
     }
+    else if(followStatus === 1){
+      try{
+        const res = await fetch(`http://localhost:9000/follow-request/sender/${requestId}`,{
+          method:"DELETE",
+          credentials:"include",
+        });
+        if(!res.ok){
+          console.log("Error",res.status,res.statusText);
+        }
+        else{
+          setFollowStatus(0);
+        }
+      }catch(error){
+        console.log(error);
+      }
+    }else{
+      try{
+        const res = await fetch(`http://localhost:9000/unfollow/${props.user._id}`,{
+          method:"DELETE",
+          credentials:"include",
+        });
+        if(!res.ok){
+          console.log("Error",res.status,res.statusText);
+        }
+        else{
+          setFollowStatus(0);
+        }
+      }catch(error){
+        console.log(error);
+      }
+    }
+  }
 
-    // If more than 24 hours, format as date and time
-    return new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-        hour12: true,
-        timeZone: "Asia/Kolkata",
-    }).format(new Date(timestamp));
-  };
+  if(followStatus === 3){
+    return(
+      <p>loading...</p>
+    )
+  }
 
   return (
-    <div className='profile-content'>
-      <div className="profile-name">
-        <div className="display-picture mx-2">
-          <img className="rounded-circle display-picture-img" width="13%" src={props.user.dp} alt="avatar"/>
-        </div>
-        <div className="profile-name-text mx-2 mt-3">
+    <div className='profile-content d-flex flex-direction-column'>
+      <div className="d-flex">
+        <div className="profile-name-text d-flex align-items-center mx-2">
           <b>{props.user.name}</b>
         </div>
+        <div className='follow-btn d-flex align-items-center'>
+          {
+            props.user._id !== props.loggedInUser._id
+            ?
+            (
+              <button type='button' onClick={handleOnClick} className="btn btn-primary">{
+                followStatus === 0?
+                (
+                  "Follow"
+                ):
+                followStatus === 1?
+                (
+                  "Requested"
+                ):
+                (
+                  "Unfollow"
+                )
+              }</button>
+            )
+            
+            :""
+          }
+        </div>
       </div>
-      <div ref={divRef} className="profile-info d-flex">
-      <ul className="list-inline mb-0 text-center text-sm-start mt-3 mt-sm-0">  
-        <li className="list-inline-item mx-2"><i className="fa fa-map-marker"></i> New Hampshire</li>
-        <li className="list-inline-item mx-2"><i className="fa fa-calendar"></i> Joined {convertToIST(props.user.createdAt)}</li>
-      </ul>
+      <div className="bio mt-5">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto pariatur excepturi repellendus? Quam culpa asperiores quod minima ex voluptate non dolore repellat consequuntur. Blanditiis dolores libero fuga laborum magni quibusdam.
       </div>
+      <ProfileNav user={props.user} base={base}/>
     </div>
   )
 }

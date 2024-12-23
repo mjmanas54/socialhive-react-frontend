@@ -7,12 +7,14 @@ import Chatbox from './components/ChatComponents/Chatbox';
 import { useState,useEffect } from 'react';
 import Profile from './components/ProfileComponents/Profile';
 import CreatePost from './components/ProfileComponents/CreatePost';
+import Home from './components/HomeComponents/Home';
 
 function App() {
   const [loggedInUser,setLoggedInUser] = useState(null)
   
   useEffect(() => {
     const storedUser = localStorage.getItem('loggedInUser');
+
     
     if (storedUser) {
       setLoggedInUser(JSON.parse(storedUser)); // Parse the JSON string to an object
@@ -23,10 +25,11 @@ function App() {
     <Router>
       <Navbar loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser}/>
       <Routes>
-        <Route exact path="/" element={<Chatbox loggedInUser={loggedInUser}/>}/>
+        <Route exact path="/" element={<Home loggedInUser={loggedInUser}/>}/>
+        <Route exact path="/chat" element={<Chatbox loggedInUser={loggedInUser}/>}/>
         <Route exact path="/login" element={<Login setLoggedInUser={setLoggedInUser}/>}/>
         <Route exact path="/signup" element={<Signup/>}/>
-        <Route path="/profile/:user_id" element={<Profile loggedInUser={loggedInUser}/>}/>
+        <Route path="/profile/:user_id/*" element={<Profile loggedInUser={loggedInUser}/>}/>
         <Route path="/add-post" element={<CreatePost loggedInUser={loggedInUser}/>}/>
       </Routes>
     </Router>
