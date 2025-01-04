@@ -36,7 +36,8 @@ const Navbar = (props) => {
 
         // Redirect to the login page
         localStorage.removeItem('loggedInUser');
-        props.setLoggedInUser({"name":"","email":""})
+        props.setLoggedInUser(null);
+        props.socket.close();
         navigate('/login');
       } else {
         console.error('Logout failed');

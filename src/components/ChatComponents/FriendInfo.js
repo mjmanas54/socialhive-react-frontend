@@ -2,7 +2,8 @@ import React from 'react'
 
 const FriendInfo = (props) => {
   const handleOnClick = ()=>{
-    props.setSelectedUser(props.user)
+    props.setSelectedUser(props.user);
+    props.setIsActive(-1);
   }
   return (
     <div className={`container friend-info p-3 ${((props.selectedUser !== null)&&(props.selectedUser.email === props.user.email))?("selected"):""}`} onClick={handleOnClick}>
@@ -12,9 +13,6 @@ const FriendInfo = (props) => {
       <div className="name">
         <div className="name-text">
           {props.user.name}
-        </div>
-        <div className="status">
-          online
         </div>
       </div>
       <div className="message-count">

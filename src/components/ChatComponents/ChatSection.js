@@ -4,12 +4,15 @@ import EmptyChat from './EmptyChat';
 import MessageTyper from './MessageTyper'
 import { useNavigate } from 'react-router-dom';
 import LoadingChat from './LoadingChat';
+import NoChatOpen from './NoChatOpen';
 
 const ChatSection = (props) => {
   const [messages, setMessages] = useState([]);
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   const [isLoading,setIsLoading] = useState(true);
   const navigate = useNavigate();
+  // const location = useLocation();
+
   useEffect(()=>{
     const fetchMessages = async () => {
       try {
@@ -48,22 +51,34 @@ const ChatSection = (props) => {
   },[props.selectedUser,props.loggedInUser.email])
 
 
-  const connectWebSocket = () => {
-    if (socket) {
-      console.log('WebSocket is already connected.');
-      return; // Prevent creating a new socket if one is already established
+  props.socket.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data);
+    const { action, message_content } = parsedData;
+
+    
+    if(action === "online"){
+      console.log("online",message_content);
+      if(props.selectedUser.email === message_content){
+        // props.setSelectedUser({...props.selectedUser,isActive:true})
+        props.setIsActive(1);
+      }
+      const updatedUsers = props.filteredUsers.map((user) =>
+        user.email === message_content ? { ...user, isActive: true } : user
+      );
+      props.setFilteredUsers(updatedUsers);
     }
-
-    const sckt = new WebSocket('ws://localhost:9000/ws'); // Replace with your WebSocket server URL
-
-    sckt.onopen = () => {
-      
-    };
-
-    sckt.onmessage = (event) => {
-      const parsedData = JSON.parse(event.data);
-      const { action, message_content } = parsedData;
-
+    else if(action === "offline"){
+      console.log("offline",message_content);
+      if(props.selectedUser.email === message_content){
+        // props.setSelectedUser({...props.selectedUser,isActive:false,lastActive:Date.now()})
+        props.setIsActive(0);
+      }
+      const updatedUsers = props.filteredUsers.map((user) =>
+        user.email === message_content ? { ...user, isActive: false, lastActive: Date.now() } : user
+      );
+      props.setFilteredUsers(updatedUsers);
+    }
+    else{
       setMessages((prevMessages) => {
         const updatedMessages =
           action === "delete"
@@ -72,33 +87,13 @@ const ChatSection = (props) => {
 
         return updatedMessages;
       });
-    };
-
-    sckt.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    sckt.onclose = (event) => {
-      console.log('WebSocket is closed:', event);
-      setTimeout(() => {
-        console.log('Attempting to reconnect...');
-        connectWebSocket(); // Reconnect on close
-      }, 3000); // Retry after 3 seconds
-    };
-
-    setSocket(sckt);
+      console.log(message_content);
+    }
   };
 
-  useEffect(() => {
-    connectWebSocket();
-
-    return () => {
-      if (socket) {
-        console.log('Closing WebSocket connection...');
-        socket.close();
-      }
-    };
-  }, []); // Empty dependency array ensures this runs once on mount
+  props.socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
 
 
   const chatSectionRef = useRef(null);  // Reference to the chat section
@@ -112,26 +107,32 @@ const ChatSection = (props) => {
 
 
   const sendMessage = (to,messageContent) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
+    if (props.socket && props.socket.readyState === WebSocket.OPEN) {
       const message = {
         "action":"send",
         "to":to,
         "msg":messageContent
       };
-      socket.send(JSON.stringify(message));
+      props.socket.send(JSON.stringify(message));
     }
   };
 
   const deleteMessage = (messageId) => {
     // while sending delete request make sure to send messageId in msg instead of  messageContent
-    if (socket && socket.readyState === WebSocket.OPEN) {
+    if (props.socket && props.socket.readyState === WebSocket.OPEN) {
       const message = {
         "action":"delete",
         "to":props.selectedUser.email,
         "msg":messageId
       };
-      socket.send(JSON.stringify(message));
+      props.socket.send(JSON.stringify(message));
     }
+  }
+
+  if(props.selectedUser === null){
+    return (
+      <NoChatOpen/>
+    )
   }
 
   return (

@@ -7,7 +7,7 @@ const Post = (props) => {
     const [isLiked,setIsLiked] = useState(0);
     const [userName,setUserName] = useState("");
     const [commentText,setCommentText] = useState("");
-    const [filteredComments,setFilteredComments] = useState(props.post.comments)
+    const [filteredComments,setFilteredComments] = useState(props.post.comments);
     const [dp,setDp] = useState("");
 
     const handleOnChangeComment = (e)=>{

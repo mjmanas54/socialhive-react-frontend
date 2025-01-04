@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 const Friendsbox = (props) => {
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [filteredUsers,setFilteredUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +29,7 @@ const Friendsbox = (props) => {
         }
         const result = await response.json(); // Parse JSON response
         setUsers(result.data); // Update state
-        setFilteredUsers(result.data);
+        props.setFilteredUsers(result.data);
         
       } catch (error) {
         navigate("/login")
@@ -49,8 +48,9 @@ const Friendsbox = (props) => {
       user.name.toLowerCase().includes(currentText)
     );
 
-    setFilteredUsers(newFilteredUsers)
+    props.setFilteredUsers(newFilteredUsers);
   }
+
 
 
   return (
@@ -62,9 +62,9 @@ const Friendsbox = (props) => {
             <input value={searchText} onChange={handleOnChange} type="text" className="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"/>
         </div>
         <div className="container friend-list hidden-scrollbar">
-            {filteredUsers.map((user)=>(
+            {props.filteredUsers.map((user)=>(
               (props.loggedInUser.email !== user.email)?
-              <FriendInfo key={user._id} user={user} setSelectedUser={props.setSelectedUser} selectedUser={props.selectedUser}/>
+              <FriendInfo key={user._id} user={user} setSelectedUser={props.setSelectedUser} selectedUser={props.selectedUser} isActive={props.isActive} setIsActive={props.setIsActive}/>
               :
               null
             ))}
